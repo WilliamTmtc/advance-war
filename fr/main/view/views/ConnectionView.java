@@ -1,8 +1,8 @@
 package fr.main.view.views;
 
+import fr.main.view.controllers.*;
 import java.awt.*;
 import javax.swing.*;
-import fr.main.view.controllers.*;
 
 @SuppressWarnings("serial")
 public class ConnectionView extends View {
@@ -15,25 +15,24 @@ public class ConnectionView extends View {
     @SuppressWarnings("serial")
     protected class InputPanel extends JPanel {
 
-    final JTextField input;
+        final JTextField input;
 
-        public InputPanel (String text) {
+        public InputPanel(String text) {
             input = new JTextField(50);
 
-            add(new JLabel (text));
+            add(new JLabel(text));
             add(input);
         }
-
     }
 
-    public ConnectionView (ConnectionController controller) {
+    public ConnectionView(ConnectionController controller) {
         super(controller);
         this.controller = controller;
 
         header = new JLabel("Join a game");
-        addr   = new InputPanel("Address: ");
-        port   = new InputPanel("Port: ");
-        submit = new JButton ("Connect");
+        addr = new InputPanel("Address: ");
+        port = new InputPanel("Port: ");
+        submit = new JButton("Connect");
 
         setLayout(new GridLayout(4, 1));
 
@@ -42,6 +41,7 @@ public class ConnectionView extends View {
         add(port);
         add(submit);
 
-        submit.addActionListener(new ConnectionController.Submit(addr.input, port.input));
+        submit.addActionListener(
+            new ConnectionController.Submit(addr.input, port.input));
     }
 }

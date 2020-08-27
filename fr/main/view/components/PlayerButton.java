@@ -1,8 +1,8 @@
 package fr.main.view.components;
 
-import javax.imageio.ImageIO;
-import java.io.*;
 import java.awt.*;
+import java.io.*;
+import javax.imageio.ImageIO;
 import javax.swing.JButton;
 
 @SuppressWarnings("serial")
@@ -18,21 +18,19 @@ public class PlayerButton extends JButton {
         }
     }
 
-    public PlayerButton () {
+    public PlayerButton() {
         super("");
 
         setContentAreaFilled(false);
         setOpaque(false);
         setBounds(0, 0, 50, 50);
-        setFocusPainted(false); 
+        setFocusPainted(false);
         setBorder(null);
-
     }
 
-    public void paintComponent (Graphics g) {
+    public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
         g.drawImage(BACKGROUND, 0, 0, getWidth(), getHeight(), null);
     }
-
 }

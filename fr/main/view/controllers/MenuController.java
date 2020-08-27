@@ -1,43 +1,36 @@
 package fr.main.view.controllers;
 
+import fr.main.model.Universe;
+import fr.main.network.*;
+import fr.main.view.MainFrame;
+import fr.main.view.sound.MusicEngine;
+import fr.main.view.views.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
-
-import fr.main.model.Universe;
-import fr.main.view.views.*;
-import fr.main.view.MainFrame;
-import fr.main.network.*;
-import fr.main.view.sound.MusicEngine;
 
 /**
  * Main Menu.
  */
 public class MenuController extends Controller {
-    
-    public final ActionListener play,
-                                exit,
-                                edit,
-                                host,
-                                join,
-                                option,
-                                load;
+
+    public final ActionListener play, exit, edit, host, join, option, load;
 
     private boolean listen;
     public MusicEngine bm = new MusicEngine("./assets/sound/main.wav");
 
     public class Music implements ActionListener {
-     
+
         private final JButton sound;
 
-        public Music (JButton enableMusic) {
+        public Music(JButton enableMusic) {
             enableMusic.addActionListener(this);
             sound = enableMusic;
         }
 
-        public void actionPerformed (ActionEvent e) {
-        	listen = !listen;
-            if(!listen) {
+        public void actionPerformed(ActionEvent e) {
+            listen = !listen;
+            if (!listen) {
                 sound.setIcon(new ImageIcon("./assets/button/music03.png"));
                 bm.continues();
             } else {
@@ -47,28 +40,32 @@ public class MenuController extends Controller {
         }
     }
 
-    public MenuController () {
+    public MenuController() {
         super();
 
-        play   = e -> MainFrame.setScene(new CreateController());
+        play = e -> MainFrame.setScene(new CreateController());
 
         option = e -> MainFrame.setScene(new OptionController());
-        edit   = e -> MainFrame.setScene(new EditorController());
+        edit = e -> MainFrame.setScene(new EditorController());
 
-        exit   = e -> System.exit(0);
+        exit = e -> System.exit(0);
 
-        load   = e -> {
+        load = e -> {
             JFileChooser jfc = new JFileChooser(Universe.mapPath);
             jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-            jfc.addChoosableFileFilter(new FileNameExtensionFilter("Only .map files are accepted", "map"));
-            if (jfc.showOpenDialog(MainFrame.instance) == JFileChooser.APPROVE_OPTION){
-                try{
-                    MainFrame.setScene(new LoadController(jfc.getSelectedFile().getName()));
-                }catch(Exception exc){}
+            jfc.addChoosableFileFilter(new FileNameExtensionFilter(
+                "Only .map files are accepted", "map"));
+            if (jfc.showOpenDialog(MainFrame.instance) ==
+                JFileChooser.APPROVE_OPTION) {
+                try {
+                    MainFrame.setScene(
+                        new LoadController(jfc.getSelectedFile().getName()));
+                } catch (Exception exc) {
+                }
             }
         };
 
-        host   = e -> {
+        host = e -> {
             try {
                 Server server = new Server(8080);
                 new Thread(server::listen).start();
@@ -77,16 +74,14 @@ public class MenuController extends Controller {
 
                 MainFrame.setScene(new HubController.Host(client, server));
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, ex.getMessage(), "Error",
+                                              JOptionPane.ERROR_MESSAGE);
                 System.err.println(ex);
                 ex.printStackTrace();
             }
         };
-        join   = e -> MainFrame.setScene(new ConnectionController());
+        join = e -> MainFrame.setScene(new ConnectionController());
     }
 
-    public View makeView () {
-        return new MenuView(this);
-    }
-
+    public View makeView() { return new MenuView(this); }
 }

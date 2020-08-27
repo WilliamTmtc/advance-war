@@ -1,15 +1,13 @@
 package fr.main.model;
 
-import java.util.Iterator;
-import java.lang.Iterable;
-
 import fr.main.model.players.Player;
+import java.lang.Iterable;
+import java.util.Iterator;
 
 /**
  * Class managing the cycle of players:
  */
 public class PlayerIt implements Iterable<Player> {
-
 
     /**
      * A kind of Players' Iterator
@@ -27,7 +25,7 @@ public class PlayerIt implements Iterable<Player> {
          */
         private int index;
 
-        public Cycle (Player[] ps) {
+        public Cycle(Player[] ps) {
             index = ps.length - 1;
             this.ps = ps;
         }
@@ -38,9 +36,11 @@ public class PlayerIt implements Iterable<Player> {
          */
         public boolean hasNext() {
             int n = 0;
-            for (Player p : ps){
-                if (!p.hasLost()) n ++;
-                if (n > 1) return true;
+            for (Player p : ps) {
+                if (!p.hasLost())
+                    n++;
+                if (n > 1)
+                    return true;
             }
             return false;
         }
@@ -48,27 +48,31 @@ public class PlayerIt implements Iterable<Player> {
         /**
          * @return Next player to play
          */
-        public Player next () {
+        public Player next() {
             index = (index + 1) % ps.length;
             return ps[index];
         }
 
-        public boolean isFirst(Player p){
-            for (Player pl : ps){
-                if (p == pl) return true;
-                if (!pl.hasLost()) return false;
+        public boolean isFirst(Player p) {
+            for (Player pl : ps) {
+                if (p == pl)
+                    return true;
+                if (!pl.hasLost())
+                    return false;
             }
             return false;
         }
 
-        public void setCurrent(Player current){
+        public void setCurrent(Player current) {
             index = 0;
-            for (Player p : ps){
-                if (p == current) break;
-                index ++;
+            for (Player p : ps) {
+                if (p == current)
+                    break;
+                index++;
             }
 
-            if (index == ps.length) System.out.println("error unknown player");
+            if (index == ps.length)
+                System.out.println("error unknown player");
         }
     }
 
@@ -77,16 +81,9 @@ public class PlayerIt implements Iterable<Player> {
      */
     private Cycle players;
 
-    public PlayerIt(Player[] ps) {
-        players = new Cycle(ps);
-    }
+    public PlayerIt(Player[] ps) { players = new Cycle(ps); }
 
-    public Iterator<Player> iterator() {
-        return players;
-    }
+    public Iterator<Player> iterator() { return players; }
 
-    public Cycle cycle(){
-        return players;
-    }
-
+    public Cycle cycle() { return players; }
 }

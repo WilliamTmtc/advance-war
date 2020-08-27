@@ -1,22 +1,19 @@
 package fr.main.view.views;
 
+import fr.main.view.MainFrame;
+import fr.main.view.controllers.GameController;
+import fr.main.view.controllers.OptionController;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.*;
 import java.util.LinkedList;
 import java.util.function.Consumer;
-
+import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.imageio.ImageIO;
-
-import fr.main.view.MainFrame;
-import fr.main.view.controllers.GameController;
-import fr.main.view.controllers.OptionController;
-
 
 /**
  * Rendering main menu
@@ -27,22 +24,23 @@ public class OptionView extends View {
     private final ControllPanel[] panels;
     private Image bkg;
 
-    public OptionView(OptionController controller){
+    public OptionView(OptionController controller) {
         super(controller);
 
         bkg = null;
         try {
-          bkg = ImageIO.read(new File("./assets/screens/aaa.jpg"));
+            bkg = ImageIO.read(new File("./assets/screens/aaa.jpg"));
         } catch (IOException e) {
-          System.err.println(e);
+            System.err.println(e);
         }
 
-        // for each control, create a panel to display control's name & associated keys
+        // for each control, create a panel to display control's name &
+        // associated keys
         GameController.Controls[] controls = GameController.Controls.values();
         panels = new ControllPanel[controls.length];
-        this.setLayout(new GridLayout(controls.length + 1,1));
+        this.setLayout(new GridLayout(controls.length + 1, 1));
 
-        for (int i = 0; i < controls.length; i++){
+        for (int i = 0; i < controls.length; i++) {
             panels[i] = new ControllPanel(controls[i]);
             add(panels[i]);
         }
@@ -60,7 +58,7 @@ public class OptionView extends View {
         // Cancel button (to go back to saved configuration)
         c = new JButton("Cancel");
         c.addActionListener(e -> {
-            for (ControllPanel co : panels){
+            for (ControllPanel co : panels) {
                 co.reset();
             }
         });
@@ -69,18 +67,19 @@ public class OptionView extends View {
         // Save button (to save the current configuration)
         c = new JButton("Save");
         c.addActionListener(e -> {
-            try (BufferedWriter bw = new BufferedWriter(new FileWriter(GameController.Controls.parameters))) {
+            try (BufferedWriter bw = new BufferedWriter(
+                     new FileWriter(GameController.Controls.parameters))) {
                 bw.write("");
-                for (ControllPanel cp : panels){
+                for (ControllPanel cp : panels) {
                     bw.append(cp.control.toString() + " ");
                     for (Integer i : cp.commands)
                         bw.append(i + " ");
                     bw.append("\n");
                 }
-            }catch(IOException ioException){
+            } catch (IOException ioException) {
                 System.out.println(ioException);
                 System.out.println("Error when saving parameters");
-            }finally{
+            } finally {
                 GameController.Controls.updateAll();
             }
         });
@@ -90,7 +89,7 @@ public class OptionView extends View {
         c = new JButton("Default");
         c.addActionListener(e -> {
             GameController.Controls.defaultValues();
-            for (ControllPanel co :  panels)
+            for (ControllPanel co : panels)
                 co.reset();
         });
         p.add(c);
@@ -99,11 +98,11 @@ public class OptionView extends View {
     }
 
     @Override
-    public void paintComponent (Graphics g) {
-      super.paintComponent(g);
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
 
-      if (bkg != null)
-        g.drawImage(bkg, 0, 0, MainFrame.width(), MainFrame.height(), null);
+        if (bkg != null)
+            g.drawImage(bkg, 0, 0, MainFrame.width(), MainFrame.height(), null);
     }
 
     /**
@@ -112,14 +111,14 @@ public class OptionView extends View {
     @SuppressWarnings("serial")
     class KeyDialog extends JDialog {
 
-        public KeyDialog(final Consumer<KeyEvent> r){
+        public KeyDialog(final Consumer<KeyEvent> r) {
             super(MainFrame.instance, "Enter a key");
             pack();
             setLocationRelativeTo(null);
             setVisible(true);
 
-            addKeyListener(new KeyAdapter(){
-                public void keyPressed(KeyEvent e){
+            addKeyListener(new KeyAdapter() {
+                public void keyPressed(KeyEvent e) {
                     r.accept(e);
                     setVisible(false);
                 }
@@ -128,17 +127,19 @@ public class OptionView extends View {
     }
 
     /**
-     * A control panel is a panel associated to a control in which there is the name of the control, an "add" button and the list of existing keys associated to the control
+     * A control panel is a panel associated to a control in which there is the
+     * name of the control, an "add" button and the list of existing keys
+     * associated to the control
      */
     @SuppressWarnings("serial")
-    class ControllPanel extends JPanel{
+    class ControllPanel extends JPanel {
 
         public final GameController.Controls control;
         private final LinkedList<Integer> commands;
         private final JLabel label;
         private final JButton add;
 
-        public ControllPanel(GameController.Controls control){
+        public ControllPanel(GameController.Controls control) {
             this.control = control;
             commands = new LinkedList<Integer>();
 
@@ -146,7 +147,7 @@ public class OptionView extends View {
             add = new JButton("+");
             add.addActionListener(act -> {
                 new KeyDialog(e -> {
-                    if (! commands.contains(e.getKeyCode())){
+                    if (!commands.contains(e.getKeyCode())) {
                         this.add(new CustomButton(e.getKeyCode()));
                         revalidate();
                         repaint();
@@ -159,7 +160,7 @@ public class OptionView extends View {
             reset();
         }
 
-        public void reset(){
+        public void reset() {
             removeAll();
             commands.clear();
 
@@ -173,18 +174,17 @@ public class OptionView extends View {
             repaint();
         }
 
-        public LinkedList<Integer> getCommandList(){
-            return commands;
-        }
+        public LinkedList<Integer> getCommandList() { return commands; }
 
         @SuppressWarnings("serial")
         class CustomButton extends JButton {
 
-            public CustomButton(int i){
+            public CustomButton(int i) {
                 super(KeyEvent.getKeyText(i));
                 ControllPanel.this.commands.add((Integer)i);
                 addActionListener(a -> {
-                    ControllPanel.this.remove(ControllPanel.this.getComponentZOrder(this));
+                    ControllPanel.this.remove(
+                        ControllPanel.this.getComponentZOrder(this));
                     ControllPanel.this.commands.remove((Integer)i);
                     ControllPanel.this.revalidate();
                     ControllPanel.this.repaint();

@@ -1,22 +1,5 @@
 package fr.main.view.views;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Image;
-import java.io.IOException;
-import java.util.ArrayList;
-
-import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-
 import fr.main.model.commanders.BasicCommander;
 import fr.main.model.commanders.ContactCommander;
 import fr.main.model.commanders.DestroyCommander;
@@ -29,6 +12,21 @@ import fr.main.view.MainFrame;
 import fr.main.view.components.MenuButton;
 import fr.main.view.controllers.CreateController;
 import fr.main.view.render.sprites.Sprite;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Image;
+import java.io.IOException;
+import java.util.ArrayList;
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 /**
  * View of commanders selection
@@ -36,7 +34,7 @@ import fr.main.view.render.sprites.Sprite;
 @SuppressWarnings("serial")
 public class CreateView extends View {
 
-	protected CreateController controller;
+    protected CreateController controller;
 
     /**
      * Panels with all commanders
@@ -44,10 +42,9 @@ public class CreateView extends View {
     @SuppressWarnings("serial")
     public class CommandersPanel extends JPanel {
 
-		private final JButton[] btns;
-        private final JButton   startGame;
-        @SuppressWarnings("unused")
-		private final int width, height;
+        private final JButton[] btns;
+        private final JButton startGame;
+        @SuppressWarnings("unused") private final int width, height;
 
         /**
          * Index of which commander is selected
@@ -55,24 +52,45 @@ public class CreateView extends View {
         private int focus;
         private Image backgroundImage;
 
-        public CommandersPanel () throws IOException {
+        public CommandersPanel() throws IOException {
             btns = new JButton[6];
             width = 140;
             height = 156;
-            backgroundImage = new ImageIcon("./assets/screens/acc.jpg").getImage();
-            
+            backgroundImage =
+                new ImageIcon("./assets/screens/acc.jpg").getImage();
+
             setLayout(null);
-            setPreferredSize(new Dimension(MainFrame.width(), MainFrame.height() / 2 + 100));
+            setPreferredSize(
+                new Dimension(MainFrame.width(), MainFrame.height() / 2 + 100));
             setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-            
-            btns[0] = new MenuButton(new ImageIcon(Sprite.get("./assets/commanders/contact.png").getImage(0,0,140,160)), 300, 20);
-            btns[1] = new MenuButton(new ImageIcon(Sprite.get("./assets/commanders/destroy.png").getImage(0,0,140,160)), 300, 200);
-            btns[2] = new MenuButton(new ImageIcon(Sprite.get("./assets/commanders/money.png")  .getImage(0,0,140,160)), 550, 20);
-            btns[3] = new MenuButton(new ImageIcon(Sprite.get("./assets/commanders/repair.png") .getImage(0,0,140,160)), 550, 200);
-            btns[4] = new MenuButton(new ImageIcon(Sprite.get("./assets/commanders/basic.png")  .getImage(0,0,140,160)), 800, 20);
-            btns[5] = new MenuButton(new ImageIcon(Sprite.get("./assets/commanders/ranged.png") .getImage(0,0,140,160)), 800, 200);
-            
-            startGame = new MenuButton("CHOOSE MAP","./assets/button/startGame.png", 350, 450);
+
+            btns[0] = new MenuButton(
+                new ImageIcon(Sprite.get("./assets/commanders/contact.png")
+                                  .getImage(0, 0, 140, 160)),
+                300, 20);
+            btns[1] = new MenuButton(
+                new ImageIcon(Sprite.get("./assets/commanders/destroy.png")
+                                  .getImage(0, 0, 140, 160)),
+                300, 200);
+            btns[2] = new MenuButton(
+                new ImageIcon(Sprite.get("./assets/commanders/money.png")
+                                  .getImage(0, 0, 140, 160)),
+                550, 20);
+            btns[3] = new MenuButton(
+                new ImageIcon(Sprite.get("./assets/commanders/repair.png")
+                                  .getImage(0, 0, 140, 160)),
+                550, 200);
+            btns[4] = new MenuButton(
+                new ImageIcon(Sprite.get("./assets/commanders/basic.png")
+                                  .getImage(0, 0, 140, 160)),
+                800, 20);
+            btns[5] = new MenuButton(
+                new ImageIcon(Sprite.get("./assets/commanders/ranged.png")
+                                  .getImage(0, 0, 140, 160)),
+                800, 200);
+
+            startGame = new MenuButton(
+                "CHOOSE MAP", "./assets/button/startGame.png", 350, 450);
 
             for (int i = 0; i < btns.length; i++) {
                 final int target = i;
@@ -80,19 +98,18 @@ public class CreateView extends View {
                 btns[i].addActionListener(e -> focus = target);
                 add(btns[i]);
             }
-            
+
             startGame.addActionListener(controller.play);
             startGame.setEnabled(false);
             add(startGame);
         }
 
-        public int getFocus () {
-            return focus;
-        }
-        
-        protected void paintComponent(Graphics g) { 
+        public int getFocus() { return focus; }
+
+        protected void paintComponent(Graphics g) {
             super.paintComponent(g);
-            g.drawImage(this.backgroundImage, 0, 0, this.getWidth(), this.getHeight(), this);
+            g.drawImage(this.backgroundImage, 0, 0, this.getWidth(),
+                        this.getHeight(), this);
         }
     }
 
@@ -102,14 +119,14 @@ public class CreateView extends View {
     @SuppressWarnings("serial")
     public class PlayersPanel extends JPanel {
 
-		private final int width, height;
+        private final int width, height;
 
         /**
          * Index of focused player
          */
         private int focus;
 
-        private final JButton[]   btns;
+        private final JButton[] btns;
         private final JCheckBox[] checks;
         private final JTextField[] labels;
 
@@ -120,9 +137,10 @@ public class CreateView extends View {
          */
         private final int[] selected;
 
-        public PlayersPanel () throws IOException {
+        public PlayersPanel() throws IOException {
             setLayout(new GridBagLayout());
-            setPreferredSize(new Dimension(MainFrame.width()/2, MainFrame.height() * 4 / 5));
+            setPreferredSize(new Dimension(MainFrame.width() / 2,
+                                           MainFrame.height() * 4 / 5));
 
             setOpaque(false);
             setBorder(null);
@@ -148,26 +166,32 @@ public class CreateView extends View {
                 btns[i] = new JButton();
                 btns[i].setPreferredSize(new Dimension(width, height));
                 btns[i].setContentAreaFilled(false);
-                btns[i].setBorder(BorderFactory.createLineBorder(Color.BLUE, 2));
+                btns[i].setBorder(
+                    BorderFactory.createLineBorder(Color.BLUE, 2));
                 final int target = i;
                 btns[i].addActionListener(e -> {
-                    btns[focus].setBorder(BorderFactory.createLineBorder(Color.BLUE, 2));
+                    btns[focus].setBorder(
+                        BorderFactory.createLineBorder(Color.BLUE, 2));
                     focus = target;
-                    btns[focus].setBorder(BorderFactory.createLineBorder(Color.GREEN, 4));
+                    btns[focus].setBorder(
+                        BorderFactory.createLineBorder(Color.GREEN, 4));
                     selected[focus] = -1;
                     btns[focus].setIcon(null);
 
                     int nb = 0;
-                    for (int n : selected) if (n != -1) nb ++;
+                    for (int n : selected)
+                        if (n != -1)
+                            nb++;
                     CreateView.this.commanders.startGame.setEnabled(nb >= 2);
                 });
                 add(btns[i], gc);
 
                 gc.gridheight = 1;
                 gc.gridx = 1;
-                labels[i] = new JTextField("Player " + (i+1));
+                labels[i] = new JTextField("Player " + (i + 1));
                 labels[i].setOpaque(true);
-                labels[i].setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
+                labels[i].setBorder(
+                    BorderFactory.createLineBorder(Color.BLACK, 2));
                 labels[i].setBackground(new Color(100, 100, 100, 200));
                 labels[i].setForeground(Color.WHITE);
                 labels[i].setPreferredSize(new Dimension(70, 10));
@@ -183,13 +207,15 @@ public class CreateView extends View {
         /**
          * Change focused player's commander
          */
-        public void updateCommander () {
+        public void updateCommander() {
             btns[focus].setIcon(commanders.btns[commanders.focus].getIcon());
             selected[focus] = commanders.focus;
             btns[focus].revalidate();
 
             int nb = 0;
-            for (int n : selected) if (n != -1) nb ++;
+            for (int n : selected)
+                if (n != -1)
+                    nb++;
             CreateView.this.commanders.startGame.setEnabled(nb >= 2);
         }
 
@@ -200,38 +226,50 @@ public class CreateView extends View {
             Player.increment_id = 0;
             ArrayList<Player> ps = new ArrayList<>();
             for (int i = 0; i < selected.length; i++) {
-                if (selected[i] == -1) continue;
+                if (selected[i] == -1)
+                    continue;
                 Player p;
                 if (checks[i].isSelected())
                     p = new AIPlayer(labels[i].getText());
                 else
-                    p = new Player("Player " + (i + 1)); 
+                    p = new Player("Player " + (i + 1));
                 ps.add(p);
                 switch (selected[i]) {
-                    case 0: new ContactCommander(p); break;
-                    case 1: new DestroyCommander(p); break;
-                    case 2: new MoneyCommander(p);   break;
-                    case 3: new RepairCommander(p);  break;
-                    case 4: new BasicCommander(p);   break;
-                    case 5: new RangedCommander(p);  break;
+                case 0:
+                    new ContactCommander(p);
+                    break;
+                case 1:
+                    new DestroyCommander(p);
+                    break;
+                case 2:
+                    new MoneyCommander(p);
+                    break;
+                case 3:
+                    new RepairCommander(p);
+                    break;
+                case 4:
+                    new BasicCommander(p);
+                    break;
+                case 5:
+                    new RangedCommander(p);
+                    break;
                 }
             }
             return ps.toArray(new Player[ps.size()]);
         }
-
     }
 
     public final CommandersPanel commanders;
     public final PlayersPanel players;
 
-    public CreateView (CreateController controller) throws IOException {
+    public CreateView(CreateController controller) throws IOException {
         super(controller);
 
         this.controller = controller;
         setLayout(new BorderLayout());
 
         commanders = new CommandersPanel();
-        players    = new PlayersPanel();
+        players = new PlayersPanel();
 
         JPanel select = new JPanel(new BorderLayout());
         players.setBounds(50, 20, 250, 680);

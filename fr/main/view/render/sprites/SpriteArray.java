@@ -12,8 +12,6 @@ public class SpriteArray extends ArrayList<Image> {
 
         Sprite sprite = Sprite.get(path);
         for (ScaleRect rect : images)
-        add(sprite.getImage(rect));
+            add(sprite.getImage(rect));
     }
-
 }
-

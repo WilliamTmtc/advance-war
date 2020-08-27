@@ -1,8 +1,8 @@
 package fr.main.view.controllers;
 
-import fr.main.view.views.LoadView;
 import fr.main.model.players.Player;
 import fr.main.view.MainFrame;
+import fr.main.view.views.LoadView;
 
 /**
  * Loading screen
@@ -14,12 +14,12 @@ public class LoadController extends Controller {
     private GameController controller;
     private boolean ready;
 
-    public LoadController(String map, Player[] ps){
+    public LoadController(String map, Player[] ps) {
         controller = null;
         ready = false;
         new Thread(() -> {
-          controller = new GameController(map, ps);
-          ready = true;
+            controller = new GameController(map, ps);
+            ready = true;
         }).start();
         load = 0;
     }
@@ -28,8 +28,8 @@ public class LoadController extends Controller {
         ready = false;
         controller = null;
         new Thread(() -> {
-          controller = new GameController(filename);
-          ready = true;
+            controller = new GameController(filename);
+            ready = true;
         }).start();
         load = 0;
     }
@@ -37,15 +37,11 @@ public class LoadController extends Controller {
     public void update() {
         load = Math.min(500, load + 1);
 
-        if (load >= 500 && ready) MainFrame.setScene(controller);
+        if (load >= 500 && ready)
+            MainFrame.setScene(controller);
     }
 
-    public int getLoad () {
-        return load / 5;
-    }
+    public int getLoad() { return load / 5; }
 
-    public LoadView makeView () {
-        return new LoadView(this);
-    }
-
+    public LoadView makeView() { return new LoadView(this); }
 }

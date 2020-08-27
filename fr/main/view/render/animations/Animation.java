@@ -8,13 +8,10 @@ public class Animation extends HashMap<String, AnimationState> {
 
     private AnimationState current;
 
-    public void setState (String state) {
+    public void setState(String state) {
         if (containsKey(state))
             current = get(state);
     }
 
-    public void draw(Graphics g, int x, int y) {
-        current.draw(g, x, y);
-    }
-
+    public void draw(Graphics g, int x, int y) { current.draw(g, x, y); }
 }

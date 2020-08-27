@@ -4,147 +4,142 @@ import java.util.*;
 
 public class AStar {
 
-	int[][] weights;
-	boolean[][] blocks;
-	Node[][] nodeMap;
-	Node start;
-	Node goal;
-	HashMap<Node, Integer> gScore;
-	HashMap<Node, Integer> fScore;
+    int[][] weights;
+    boolean[][] blocks;
+    Node[][] nodeMap;
+    Node start;
+    Node goal;
+    HashMap<Node, Integer> gScore;
+    HashMap<Node, Integer> fScore;
 
-//	LinkedList<Node> frontier;
-	PriorityQueue<Node> frontier;
-	HashSet<Node> visited;
+    //	LinkedList<Node> frontier;
+    PriorityQueue<Node> frontier;
+    HashSet<Node> visited;
 
-	HashMap<Node, Node> cameFrom;
+    HashMap<Node, Node> cameFrom;
 
+    public AStar(int[][] weights, boolean[][] blocks) {
+        this.weights = weights;
+        this.blocks = blocks;
 
-	public AStar(int[][] weights, boolean[][] blocks){
-		this.weights = weights;
-		this.blocks = blocks;
+        Node.setWeights(weights);
+        Node.setBlocks(blocks);
+    }
 
-		Node.setWeights(weights);
-		Node.setBlocks(blocks);
-	}
+    private int heuristic(Node a, Node b) {
+        return MapGenerator.abs(a.x - b.x) + MapGenerator.abs(a.y + b.y);
+    }
 
-	private int heuristic(Node a, Node b) {
-		return MapGenerator.abs(a.x - b.x) + MapGenerator.abs(a.y + b.y);
-	}
+    /**
+     * @param x0
+     * @param y0
+     * @param x1
+     * @param y1
+     * @return an array of coordinates to the tiles of the shortest route from
+     *     (x0, y0)
+     * to (x1, y1) using the aStar algorithm.
+     */
+    public int[][] shortestRoute(int x0, int y0, int x1, int y1) {
+        this.nodeMap = new Node[weights.length][weights[0].length];
 
+        nodeMap[x0][y0] = new Node(x0, y0);
+        nodeMap[x1][y1] = new Node(x1, y1);
 
-	/**
-	 * @param x0
-	 * @param y0
-	 * @param x1
-	 * @param y1
-	 * @return an array of coordinates to the tiles of the shortest route from (x0, y0)
-	 * to (x1, y1) using the aStar algorithm.
-	 */
-	public int[][] shortestRoute(int x0, int y0, int x1, int y1) {
-		this.nodeMap = new Node[weights.length][weights[0].length];
+        start = nodeMap[x0][y0];
+        goal = nodeMap[x1][y1];
 
-		nodeMap[x0][y0] = new Node(x0, y0);
-		nodeMap[x1][y1] = new Node(x1, y1);
+        gScore = new HashMap<>();
+        gScore.put(start, 0);
+        fScore = new HashMap<>();
 
-		start 	= 	nodeMap[x0][y0];
-		goal 	= 	nodeMap[x1][y1];
+        frontier = new PriorityQueue<>();
+        frontier.add(start);
 
-		gScore = new HashMap<>();
-		gScore.put(start, 0);
-		fScore = new HashMap<>();
+        visited = new HashSet<>();
+        visited.add(start);
 
-		frontier = new PriorityQueue<>();
-		frontier.add(start);
+        cameFrom = new HashMap<>();
 
-		visited = new HashSet<>();
-		visited.add(start);
+        while (frontier.size() != 0) {
+            Node current = frontier.peek();
+            frontier.remove(current);
 
-		cameFrom = new HashMap<>();
+            if (current.is(goal))
+                break;
 
-		while (frontier.size() != 0) {
-			Node current = frontier.peek();
-			frontier.remove(current);
+            for (Node next : current.getNeighbours(nodeMap)) {
+                int newCost = gScore.get(current) + next.getWeight();
+                if (!gScore.containsKey(next)) {
+                    gScore.put(next, newCost);
+                    int priority = heuristic(next, goal) + newCost;
+                    next.setWeight(priority);
+                    frontier.add(next);
+                    cameFrom.put(next, current);
 
-			if(current.is(goal))
-				break;
+                } else if (gScore.get(next) > newCost) {
+                    gScore.replace(next, newCost);
+                    int priority = heuristic(next, goal) + newCost;
+                    next.setWeight(priority);
+                    frontier.add(next);
+                    cameFrom.put(next, current);
+                }
+            }
+        }
 
-			for (Node next : current.getNeighbours(nodeMap)) {
-				int newCost = gScore.get(current) + next.getWeight();
-				if(!gScore.containsKey(next)) {
-					gScore.put(next, newCost);
-					int priority = heuristic(next, goal) + newCost;
-					next.setWeight(priority);
-					frontier.add(next);
-					cameFrom.put(next, current);
+        LinkedList<Node> path = reconstructPath(start, goal, cameFrom);
+        return coorsFromNodes(path);
+    }
 
-				}
-				else if(gScore.get(next) > newCost){
-					gScore.replace(next, newCost);
-					int priority = heuristic(next, goal) + newCost;
-					next.setWeight(priority);
-					frontier.add(next);
-					cameFrom.put(next, current);
-				}
-			}
-		}
+    /**
+     * @param start
+     * @param goal
+     * @param cameFrom
+     * @return extracts the path from the map of neighbours.
+     */
+    private LinkedList<Node> reconstructPath(Node start, Node goal,
+                                             HashMap<Node, Node> cameFrom) {
+        LinkedList<Node> path = new LinkedList<>();
+        Node current = goal;
+        while (current != start) {
+            path.addFirst(current);
+            current = cameFrom.get(current);
+        }
+        path.add(start); // optional
 
-		LinkedList<Node> path =  reconstructPath(start, goal, cameFrom);
-		return coorsFromNodes(path);
-	}
+        return path;
+    }
 
-	/**
-	 * @param start
-	 * @param goal
-	 * @param cameFrom
-	 * @return extracts the path from the map of neighbours.
-	 */
-	private LinkedList<Node> reconstructPath (Node start, Node goal, HashMap<Node, Node> cameFrom) {
-			LinkedList<Node> path = new LinkedList<>();
-			Node current = goal;
-			while (current != start) {
-				path.addFirst(current);
-				current = cameFrom.get(current);
-			}
-			path.add(start); // optional
+    /**
+     * @param nodes
+     * @return an array of coordinates form a LinkedList of Nodes.
+     */
+    public int[][] coorsFromNodes(LinkedList<Node> nodes) {
+        int[][] coors = new int[nodes.size()][2];
+        int[] coor;
+        int i = 0;
 
-			return path;
-	}
+        for (Node n : nodes) {
+            coor = new int[2];
+            coor[0] = n.x;
+            coor[1] = n.y;
+            coors[i] = coor;
+            i++;
+        }
 
-	/**
-	 * @param nodes
-	 * @return an array of coordinates form a LinkedList of Nodes.
-	 */
-	public int[][] coorsFromNodes(LinkedList<Node> nodes) {
-		int[][] coors = new int[nodes.size()][2];
-		int[] coor;
-		int i = 0;
+        return coors;
+    }
 
-		for(Node n : nodes) {
-			coor = new int[2];
-			coor[0] = n.x;
-			coor[1] = n.y;
-			coors[i] = coor;
-			i ++;
-		}
+    public void setWeights(int[][] weights) {
+        this.weights = weights;
+        Node.setWeights(weights);
+    }
 
-		return coors;
-	}
+    public int[][] getWeights() { return weights; }
 
-	public void setWeights(int[][] weights) {
-		this.weights = weights;
-		Node.setWeights(weights);
-	}
+    public void setBlocks(boolean[][] blocks) {
+        this.blocks = blocks;
+        Node.setBlocks(blocks);
+    }
 
-	public int[][] getWeights() {
-		return weights;
-	}
-
-	public void setBlocks(boolean[][] blocks) {
-		this.blocks = blocks;
-		Node.setBlocks(blocks);
-	}
-
-	public boolean[][] getBlocks() {
-		return blocks;
-	}
+    public boolean[][] getBlocks() { return blocks; }
 }

@@ -1,16 +1,15 @@
 package fr.main.model.players;
 
-import java.util.HashSet;
-import java.util.ArrayList;
-import java.lang.Iterable;
-import java.util.Iterator;
-import java.awt.Color;
-
 import fr.main.model.State;
 import fr.main.model.Universe;
-import fr.main.model.units.AbstractUnit;
 import fr.main.model.buildings.OwnableBuilding;
 import fr.main.model.commanders.Commander;
+import fr.main.model.units.AbstractUnit;
+import java.awt.Color;
+import java.lang.Iterable;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 
 /**
  * Class representing a player
@@ -20,19 +19,15 @@ import fr.main.model.commanders.Commander;
 public class Player implements java.io.Serializable, Iterable<AbstractUnit> {
 
     /**
-	 * Add Player UID.
-	 */
-	private static final long serialVersionUID = -2022049310756570442L;
+     * Add Player UID.
+     */
+    private static final long serialVersionUID = -2022049310756570442L;
 
-	/**
+    /**
      * The colors of the players.
      */
-    public static final Color[] colors = new Color[]{
-        Color.red,
-        Color.blue,
-        Color.green,
-        Color.yellow
-    };
+    public static final Color[] colors =
+        new Color[] {Color.red, Color.blue, Color.green, Color.yellow};
 
     /**
      * The number of players.
@@ -62,25 +57,25 @@ public class Player implements java.io.Serializable, Iterable<AbstractUnit> {
      * The set of buildings owned by the player.
      */
     protected HashSet<OwnableBuilding> buildings;
-    
+
     private ArrayList<State> stats;
 
-    public Player (String name) {
+    public Player(String name) {
         this.name = name;
-        id        = ++increment_id;
-        units     = new HashSet<>();
+        id = ++increment_id;
+        units = new HashSet<>();
         buildings = new HashSet<>();
-        stats     = new ArrayList<>();
-        color     = colors[(id - 1) % colors.length];
+        stats = new ArrayList<>();
+        color = colors[(id - 1) % colors.length];
         commander = null;
-        funds     = 0;
-        hasLost   = false;
+        funds = 0;
+        hasLost = false;
     }
 
     /**
      * what happens when the player looses.
      */
-    public void loose(){
+    public void loose() {
         for (AbstractUnit a : unitList())
             a.dies();
         units.clear();
@@ -96,35 +91,31 @@ public class Player implements java.io.Serializable, Iterable<AbstractUnit> {
     /**
      * @return true if and only if the player lose
      */
-    public boolean hasLost(){
-        return hasLost;
-    }
+    public boolean hasLost() { return hasLost; }
 
     /**
      * @param f is the quantity of money to add to the player's funds
      */
-    public void addFunds(int f){
-        funds += f;
-    }
+    public void addFunds(int f) { funds += f; }
 
     /**
      * @return the funds of the player
      */
-    public int getFunds(){
-        return funds;
-    }
+    public int getFunds() { return funds; }
 
-    public boolean spent(int m){
-        if (m > funds) return false;
+    public boolean spent(int m) {
+        if (m > funds)
+            return false;
         funds -= m;
         return true;
     }
 
     /**
-     * @param fogwar represents the map and the tiles that can be seen by this player
+     * @param fogwar represents the map and the tiles that can be seen by this
+     *     player
      * set to true all the tiles that can be seen by the player
      */
-    public void renderVision(boolean[][] fogwar){
+    public void renderVision(boolean[][] fogwar) {
         for (AbstractUnit u : units)
             u.renderVision(fogwar);
         for (OwnableBuilding b : buildings)
@@ -134,10 +125,11 @@ public class Player implements java.io.Serializable, Iterable<AbstractUnit> {
     /**
      * @param c is the new commander of the player
      * @return true if and only if the commander was changed
-     * the commander can be changed only if the player didn't have one before (a player can have only one commander)
+     * the commander can be changed only if the player didn't have one before (a
+     * player can have only one commander)
      */
-    public boolean setCommander(Commander c){
-        if (this.commander == null){
+    public boolean setCommander(Commander c) {
+        if (this.commander == null) {
             this.commander = c;
             return true;
         }
@@ -148,9 +140,7 @@ public class Player implements java.io.Serializable, Iterable<AbstractUnit> {
     /**
      * @return the commander of the player
      */
-    public Commander getCommander () {
-        return commander;
-    }
+    public Commander getCommander() { return commander; }
 
     /**
      * @param u is the unit to add to the player's unit list
@@ -163,14 +153,12 @@ public class Player implements java.io.Serializable, Iterable<AbstractUnit> {
     /**
      * @param u is the unit to remove from the player's unit list
      */
-    public void remove(AbstractUnit u){
-        units.remove(u);
-    }
+    public void remove(AbstractUnit u) { units.remove(u); }
 
     /**
      * @param b is the building to add to the player's building list
      */
-    public void addBuilding(OwnableBuilding b){
+    public void addBuilding(OwnableBuilding b) {
         if (b.getOwner() == this && !buildings.contains(b))
             buildings.add(b);
     }
@@ -178,36 +166,32 @@ public class Player implements java.io.Serializable, Iterable<AbstractUnit> {
     /**
      * @param b is the building to remove from the player's building list
      */
-    public void removeBuilding(OwnableBuilding b){
-        buildings.remove(b);
-    }
+    public void removeBuilding(OwnableBuilding b) { buildings.remove(b); }
 
     /**
      * @return an iterator of units
      * Player implements Iterable<AbstractUnit>
      */
-    public Iterator<AbstractUnit> iterator () {
-        return units.iterator();
-    }
+    public Iterator<AbstractUnit> iterator() { return units.iterator(); }
 
     /**
      * @return a set containing the buildings owned by the player
      */
-    public HashSet<OwnableBuilding> buildingList(){
+    public HashSet<OwnableBuilding> buildingList() {
         return new HashSet<OwnableBuilding>(buildings);
     }
 
     /**
      * @return a set containing the units owned by the player
      */
-    public ArrayList<AbstractUnit> unitList(){
+    public ArrayList<AbstractUnit> unitList() {
         return new ArrayList<AbstractUnit>(units);
     }
 
     /**
      * what happens when the turn begins.
      */
-    public synchronized void turnBegins(){
+    public synchronized void turnBegins() {
         commander.turnBegins();
         for (OwnableBuilding b : buildingList())
             funds += b.getIncome();
@@ -219,19 +203,15 @@ public class Player implements java.io.Serializable, Iterable<AbstractUnit> {
     /**
      * what happens when the turn ends.
      */
-    public synchronized void turnEnds(){
+    public synchronized void turnEnds() {
         for (AbstractUnit u : unitList())
             u.turnEnds();
     }
 
-    public State[] getStats() {
-      return stats.toArray(new State[stats.size()]);
-    }
+    public State[] getStats() { return stats.toArray(new State[stats.size()]); }
 
     /**
      * @return the color of the player
      */
-	public Color getColor() {
-		return color;
-	}
+    public Color getColor() { return color; }
 }

@@ -5,9 +5,9 @@ package fr.main.model.units;
  */
 public interface HideableUnit extends AbstractUnit {
 
-	/**
-	 * @return true if and only if the unit is hidden
-	 */
+    /**
+     * @return true if and only if the unit is hidden
+     */
     boolean hidden();
 
     /**

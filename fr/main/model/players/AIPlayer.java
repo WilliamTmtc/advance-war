@@ -8,42 +8,42 @@ import fr.main.view.interfaces.DayPanel;
 
 /**
  * Represents an artificial intelligence player
- * This class's role in the decision process is empire AI (it determines the tactics to win and deals with the entire empire)
- * The game has no diplomacy and the only victory condition is taking the opponent's HQ so this class actually doesn't do much
+ * This class's role in the decision process is empire AI (it determines the
+ * tactics to win and deals with the entire empire) The game has no diplomacy
+ * and the only victory condition is taking the opponent's HQ so this class
+ * actually doesn't do much
  */
 public class AIPlayer extends Player implements ArtificialIntelligence {
 
     /**
-	 * Add AIPlayer UID
-	 */
-	private static final long serialVersionUID = 6173011940333917004L;
-	public final UnitControlAI unitControlAI;
-    public final EconomicAI    economicAI;
+     * Add AIPlayer UID
+     */
+    private static final long serialVersionUID = 6173011940333917004L;
+    public final UnitControlAI unitControlAI;
+    public final EconomicAI economicAI;
 
-    public AIPlayer(){
-        this ("IA " + Player.increment_id);
-    }
+    public AIPlayer() { this("IA " + Player.increment_id); }
 
-    public AIPlayer(String name){
+    public AIPlayer(String name) {
         super(name);
-        
-        this.economicAI    = new EconomicAI(this);
+
+        this.economicAI = new EconomicAI(this);
         this.unitControlAI = new UnitControlAI(this);
     }
 
-    public void changeBuilding(AbstractBuilding old, AbstractBuilding gold){
+    public void changeBuilding(AbstractBuilding old, AbstractBuilding gold) {
         unitControlAI.changeBuilding(old, gold);
     }
 
     @Override
-    public void loose(){
+    public void loose() {
         super.loose();
 
         unitControlAI.loose();
         economicAI.loose();
     }
 
-    public synchronized void turnBegins(){
+    public synchronized void turnBegins() {
         if (Universe.get().getDay() == 1)
             unitControlAI.findObjectives();
         super.turnBegins();
@@ -51,24 +51,24 @@ public class AIPlayer extends Player implements ArtificialIntelligence {
     }
 
     @Override
-    public void add(AbstractUnit u){
+    public void add(AbstractUnit u) {
         super.add(u);
         unitControlAI.add(u);
     }
 
     @Override
-    public void remove(AbstractUnit u){
+    public void remove(AbstractUnit u) {
         super.remove(u);
         unitControlAI.remove(u);
     }
 
     @Override
-    public void addBuilding(OwnableBuilding b){
+    public void addBuilding(OwnableBuilding b) {
         super.addBuilding(b);
         economicAI.add(b);
     }
     @Override
-    public void removeBuilding(OwnableBuilding b){
+    public void removeBuilding(OwnableBuilding b) {
         super.removeBuilding(b);
         economicAI.remove(b);
     }
@@ -76,20 +76,23 @@ public class AIPlayer extends Player implements ArtificialIntelligence {
     /**
      * What the empire AI does when it plays
      */
-    public void run(){
-        try{ Thread.sleep(DayPanel.PANEL_TIME + 150); }
-        catch(InterruptedException e){}
+    public void run() {
+        try {
+            Thread.sleep(DayPanel.PANEL_TIME + 150);
+        } catch (InterruptedException e) {
+        }
 
         // power is activated as soon as it can be
-        if (commander.canActivate(true)) commander.activate(true);
-        else if (commander.canActivate(false)) commander.activate(false);
+        if (commander.canActivate(true))
+            commander.activate(true);
+        else if (commander.canActivate(false))
+            commander.activate(false);
 
         // units play
         unitControlAI.run();
 
         // creates the units
         economicAI.run();
-
 
         Universe.get().next();
     }

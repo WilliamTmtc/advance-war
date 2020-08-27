@@ -7,8 +7,8 @@ import fr.main.model.players.Player;
  */
 @FunctionalInterface
 public interface PowerAction extends java.io.Serializable {
-	/**
-	 * @param p is the player who activates the power
-	 */
-	public void activate(Player p);
+    /**
+     * @param p is the player who activates the power
+     */
+    public void activate(Player p);
 }

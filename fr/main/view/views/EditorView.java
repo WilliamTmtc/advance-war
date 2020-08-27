@@ -1,16 +1,14 @@
 package fr.main.view.views;
 
+import fr.main.view.controllers.EditorController;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.GridLayout;
-
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
-
-import fr.main.view.controllers.EditorController;
 
 @SuppressWarnings("serial")
 public class EditorView extends View {
@@ -21,18 +19,17 @@ public class EditorView extends View {
 
     public class Map extends JPanel {
 
-        public void paintComponent (Graphics g) {
+        public void paintComponent(Graphics g) {
             // TODO: show how the land will be in the map
-            controller.world.draw(g, controller.camera.getX(), 
-                    controller.camera.getY(), 
-                    controller.camera.getOffsetX(),
-                    controller.camera.getOffsetY());
+            controller.world.draw(
+                g, controller.camera.getX(), controller.camera.getY(),
+                controller.camera.getOffsetX(), controller.camera.getOffsetY());
 
             g.setColor(Color.black);
             for (int i = 0; i < 4; i++)
-                g.fillPolygon(controller.arrows[i][0], controller.arrows[i][1], 3);
+                g.fillPolygon(controller.arrows[i][0], controller.arrows[i][1],
+                              3);
         }
-
     }
 
     @SuppressWarnings("serial")
@@ -41,20 +38,20 @@ public class EditorView extends View {
         JSlider width, height, seed, land, moutain, wood;
         JButton[] lands;
         JButton save, open, menu;
-        
-        public Tools () {
+
+        public Tools() {
             setLayout(new GridLayout(1, 2));
 
             JPanel tools = new JPanel();
             tools.setLayout(new GridLayout(16, 1));
             tools.add(new JLabel("Add tools here"));
 
-            width  = new JSlider(JSlider.HORIZONTAL, 15, 500, 50);
+            width = new JSlider(JSlider.HORIZONTAL, 15, 500, 50);
             height = new JSlider(JSlider.HORIZONTAL, 15, 500, 50);
-            seed   = new JSlider(JSlider.HORIZONTAL, 10, 500, 50);
-            land    = new JSlider(JSlider.HORIZONTAL, 0, 100, 50);
+            seed = new JSlider(JSlider.HORIZONTAL, 10, 500, 50);
+            land = new JSlider(JSlider.HORIZONTAL, 0, 100, 50);
             moutain = new JSlider(JSlider.HORIZONTAL, 0, 100, 50);
-            wood    = new JSlider(JSlider.HORIZONTAL, 0, 100, 50);
+            wood = new JSlider(JSlider.HORIZONTAL, 0, 100, 50);
 
             save = new JButton("Save");
             open = new JButton("Open");
@@ -69,13 +66,11 @@ public class EditorView extends View {
             tools.add(new JLabel("Seed:"));
             tools.add(seed);
 
-
             tools.add(new JLabel("Land/Sea proportion:"));
             tools.add(land);
 
             tools.add(new JLabel("Mountain proportion:"));
             tools.add(moutain);
-
 
             tools.add(new JLabel("Wood proportion:"));
             tools.add(wood);
@@ -103,7 +98,7 @@ public class EditorView extends View {
             for (int i = 0; i < lands.length; i++)
                 terrains.add(lands[i]);
 
-            controller.new TerrainListener (lands);
+            controller.new TerrainListener(lands);
 
             add(terrains);
             add(tools);
@@ -113,18 +108,19 @@ public class EditorView extends View {
     public final Map map;
     private Tools tools;
 
-    public EditorView (EditorController controller) {
+    public EditorView(EditorController controller) {
         super(controller);
         this.controller = controller;
 
-        map = new Map ();
+        map = new Map();
         tools = new Tools();
 
         setLayout(new BorderLayout());
         add(map, BorderLayout.CENTER);
         add(tools, BorderLayout.EAST);
 
-        controller.new Adaptater(tools.width, tools.height, tools.seed, tools.land, tools.moutain, tools.wood);
+        controller.new Adaptater(tools.width, tools.height, tools.seed,
+                                 tools.land, tools.moutain, tools.wood);
         map.addMouseMotionListener(controller);
         map.addMouseListener(controller);
 
@@ -132,5 +128,4 @@ public class EditorView extends View {
         tools.open.addActionListener(controller.open);
         tools.menu.addActionListener(controller.menu);
     }
-
 }

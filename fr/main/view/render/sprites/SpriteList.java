@@ -1,9 +1,8 @@
 package fr.main.view.render.sprites;
 
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.util.LinkedList;
-
-import java.awt.Image;
 
 @SuppressWarnings("serial")
 public class SpriteList extends LinkedList<Image> {
@@ -34,8 +33,6 @@ public class SpriteList extends LinkedList<Image> {
         sprite = Sprite.get(path);
         add(sprite.getImage(image));
     }
-
-
 
     public SpriteList(BufferedImage i) {
         super();

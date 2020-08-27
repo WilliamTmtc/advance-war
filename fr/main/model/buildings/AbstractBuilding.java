@@ -1,8 +1,7 @@
 package fr.main.model.buildings;
 
-import fr.main.model.units.AbstractUnit;
 import fr.main.model.terrains.AbstractTerrain;
-
+import fr.main.model.units.AbstractUnit;
 import java.awt.Point;
 
 /**
@@ -10,7 +9,7 @@ import java.awt.Point;
  */
 @SuppressWarnings("serial")
 public interface AbstractBuilding extends java.io.Serializable {
-    
+
     /**
      * @return the name of the building
      */
@@ -20,20 +19,17 @@ public interface AbstractBuilding extends java.io.Serializable {
      * @param u is the unit on the building
      * @return defense bonus given by the building
      */
-    int getDefense (AbstractUnit u);
+    int getDefense(AbstractUnit u);
 
     /**
      * @return terrain on which is the building
      */
-    AbstractTerrain getTerrain ();
+    AbstractTerrain getTerrain();
 
     int getX();
     int getY();
 
-    default Point getLocation(){
-        return new Point(getX(), getY());
-    }
+    default Point getLocation() { return new Point(getX(), getY()); }
 
     void setLocation(Point p);
 }
-

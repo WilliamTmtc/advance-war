@@ -1,15 +1,13 @@
 package fr.main.view.views;
 
+import fr.main.view.controllers.HubController;
 import java.awt.Color;
 import java.awt.GridLayout;
-
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-
-import fr.main.view.controllers.HubController;
 
 @SuppressWarnings("serial")
 public class HubView extends View {
@@ -21,30 +19,32 @@ public class HubView extends View {
 
         JLabel label;
 
-        public Slot () {
+        public Slot() {
             setBorder(BorderFactory.createLineBorder(Color.black));
             label = new JLabel("Empty slot");
 
             add(label);
         }
 
-        public void set (fr.main.network.Slot slot) {
-            if (slot == null) label.setText("Empty slot");
+        public void set(fr.main.network.Slot slot) {
+            if (slot == null)
+                label.setText("Empty slot");
             else {
-                if (slot.ready) label.setForeground(Color.green);
-                else label.setForeground(Color.red);
+                if (slot.ready)
+                    label.setForeground(Color.green);
+                else
+                    label.setForeground(Color.red);
                 label.setText("Player " + (slot.id + 1) + ": " + slot.name);
             }
         }
-
     }
 
     @SuppressWarnings("serial")
     private class MutableSlot extends Slot {
 
         private JTextField name;
-        
-        public MutableSlot () {
+
+        public MutableSlot() {
             super();
             HubView.this.clientSlot = this;
             label.setText("Player name: ");
@@ -53,7 +53,6 @@ public class HubView extends View {
 
             add(name);
         }
-
     }
 
     protected Slot[] slots;
@@ -62,32 +61,34 @@ public class HubView extends View {
     protected JButton ready;
 
     public HubView(HubController controller) {
-        super (controller);
+        super(controller);
         this.controller = controller;
         setLayout(new GridLayout(6, 1, 0, 20));
         setBorder(BorderFactory.createEmptyBorder(50, 50, 50, 50));
 
-        header = new JLabel("Joining game on address " + controller.getAddress());
-        ready  = new JButton("Ready to play");
+        header =
+            new JLabel("Joining game on address " + controller.getAddress());
+        ready = new JButton("Ready to play");
         ready.addActionListener(controller.readyAction);
         ready.addActionListener(controller.send);
 
         slots = new Slot[4];
         for (int i = 0; i < slots.length; i++)
-            if (i == controller.getID()) slots[i] = new MutableSlot();
-            else slots[i] = new Slot();
+            if (i == controller.getID())
+                slots[i] = new MutableSlot();
+            else
+                slots[i] = new Slot();
 
-        add (header);
+        add(header);
         for (int i = 0; i < slots.length; i++)
             add(slots[i]);
-        add (ready);
-
+        add(ready);
     }
 
     @SuppressWarnings("serial")
     public static class Host extends HubView {
 
-        public Host (HubController controller) {
+        public Host(HubController controller) {
             super(controller);
             header.setText("Hosting game on addr " + controller.getAddress());
 
@@ -95,27 +96,24 @@ public class HubView extends View {
             ready.setEnabled(false);
         }
 
-        public void update () {
+        public void update() {
             boolean allReady = true;
             // host ID = 0
             for (int i = 1; i < slots.length; i++) {
                 slots[i].set(controller.slots[i]);
-                allReady = allReady && (controller.slots[i] == null || controller.slots[i].ready);
+                allReady = allReady && (controller.slots[i] == null ||
+                                        controller.slots[i].ready);
             }
 
             ready.setEnabled(allReady);
         }
-
     }
 
-    public void update () {
+    public void update() {
         // TODO: not necessary to loop
         for (int i = 0; i < slots.length; i++)
             slots[i].set(controller.slots[i]);
     }
 
-    public String getName () {
-        return clientSlot.name.getText();
-    }
-
+    public String getName() { return clientSlot.name.getText(); }
 }
